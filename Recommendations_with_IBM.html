@@ -15628,16 +15628,16 @@ The 3 most similar users to user 46 are: [4201, 3782, 23]
 
 
 <div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain">
-<pre>[&#39;1448    i ranked every intro to data science course on...\nName: title, dtype: object&#39;,
+<pre>[&#39;data tidying in data science experience&#39;,
  &#39;analyze facebook data using ibm watson and watson studio&#39;,
- &#39;analyze energy consumption in buildings&#39;,
- &#39;520    using notebooks with pixiedust for fast, flexi...\nName: title, dtype: object&#39;,
- &#39;data tidying in data science experience&#39;,
  &#39;recommender systems: approaches &amp; algorithms&#39;,
- &#39;airbnb data for analytics: mallorca reviews&#39;,
- &#39;analyze accident reports on amazon emr spark&#39;,
  &#39;a tensorflow regression model to predict house values&#39;,
- &#39;airbnb data for analytics: vancouver listings&#39;]</pre>
+ &#39;airbnb data for analytics: vancouver listings&#39;,
+ &#39;1448    i ranked every intro to data science course on...\nName: title, dtype: object&#39;,
+ &#39;airbnb data for analytics: mallorca reviews&#39;,
+ &#39;520    using notebooks with pixiedust for fast, flexi...\nName: title, dtype: object&#39;,
+ &#39;analyze accident reports on amazon emr spark&#39;,
+ &#39;analyze energy consumption in buildings&#39;]</pre>
 </div>
 
 </div>
@@ -15776,7 +15776,16 @@ The 3 most similar users to user 46 are: [4201, 3782, 23]
     <span class="k">for</span> <span class="n">close</span> <span class="ow">in</span> <span class="n">close_users</span><span class="p">:</span>
         <span class="n">art_id</span><span class="p">,</span> <span class="n">art_names</span> <span class="o">=</span> <span class="n">get_user_articles</span><span class="p">(</span><span class="n">close</span><span class="p">)</span>
         <span class="n">not_seen_articles_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">art_id</span><span class="p">,</span> <span class="n">seen_article_ids</span><span class="p">)</span>
-        <span class="n">recs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">not_seen_articles_ids</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        
+        <span class="c1"># if length of recommendation exceeds m, get top articles from those article ids</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">not_seen_articles_ids</span><span class="p">)</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">recs</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">num_req_ids</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">recs</span><span class="p">)</span>
+            <span class="n">temp_df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;article_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">not_seen_articles_ids</span><span class="p">)]</span>
+            
+            <span class="n">top_article_ids</span> <span class="o">=</span> <span class="n">get_top_article_ids</span><span class="p">(</span><span class="n">num_req_ids</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">temp_df</span><span class="p">)</span>
+            <span class="n">recs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">top_article_ids</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">recs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">not_seen_articles_ids</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
 
         <span class="n">not_seen_article_names</span> <span class="o">=</span> <span class="n">get_article_names</span><span class="p">(</span><span class="n">not_seen_articles_ids</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
         <span class="n">rec_names</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">not_seen_article_names</span><span class="p">)</span>
@@ -15956,10 +15965,10 @@ The 3 most similar users to user 46 are: [4201, 3782, 23]
 
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain">
 <pre>The top 10 recommendations for user 20 are the following article ids:
-[&#39;1014.0&#39;, &#39;1059.0&#39;, &#39;109.0&#39;, &#39;111.0&#39;, &#39;1157.0&#39;, &#39;1162.0&#39;, &#39;1164.0&#39;, &#39;1172.0&#39;, &#39;1186.0&#39;, &#39;12.0&#39;]
+[&#39;1429.0&#39;, &#39;1330.0&#39;, &#39;1314.0&#39;, &#39;1293.0&#39;, &#39;1162.0&#39;, &#39;1271.0&#39;, &#39;43.0&#39;, &#39;1351.0&#39;, &#39;1368.0&#39;, &#39;1305.0&#39;]
 
 The top 10 recommendations for user 20 are the following article names:
-[&#39;accelerate your workflow with dsx&#39;, &#39;what is text analytics?&#39;, &#39;how smart catalogs can turn the big data flood into an ocean of opportunity&#39;, &#39;generative adversarial networks (gans)&#39;, &#39;deep learning with data science experience&#39;, &#39;recommendation system algorithms – stats and bots&#39;, &#39;learn basics about notebooks and apache spark&#39;, &#39;times world university ranking analysis&#39;, &#39;using brunel in ipython/jupyter notebooks&#39;, &#39;using machine learning to predict value of homes on airbnb&#39;]
+[&#39;developing for the ibm streaming analytics service&#39;, &#39;intents &amp; examples for ibm watson conversation&#39;, &#39;this week in data science (may 23, 2017)&#39;, &#39;neurally embedded emojis&#39;, &#39;timeseries data analysis of iot events by using jupyter notebook&#39;, &#39;trust in data science&#39;, &#39;load data into rstudio for analysis in dsx&#39;, &#39;super fast string matching in python&#39;, &#39;deploy your python model as a restful api&#39;, &#39;finding optimal locations of new store using decision optimization&#39;]
 </pre>
 </div>
 </div>
@@ -17801,8 +17810,15 @@ The top 10 recommendations for user 20 are the following article names:
 <div class="jp-Cell-inputWrapper"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput " data-mime-type="text/markdown">
 <p><strong>Your response here.</strong></p>
-<p><em>It can be seen in the above graph that the accuracy decreases as the number of latent features increases. Any number of latent features below 50 seems like a good value here. However, the accuracy is still pretty great ranging above 95%, which seems too good to be true. It might be possible that such accuracy is due to overfitting.</em>
-<em>For future, a combination of different techniques like collaborative filtering, content based and SVD can be combined to cover all possible scenarios for a better recommendation system.</em></p>
+<p><em>It can be seen in the above graph that the accuracy decreases as the number of latent features increases. Any number of latent features below 50 seems like a good value here. However, the accuracy is still pretty great ranging above 95%, which seems too good to be true. It might be possible that such accuracy is due to overfitting.</em></p>
+<p><strong>Is accuracy a good metric to use here in this case?</strong></p>
+<p><em>In this case, accuracy is used to assess model's performance. However, <a href="https://link.springer.com/article/10.1007/s13042-017-0762-9">studies</a> suggest that <strong>accuracy based metrics ignore users’ desires for novelty and variety</strong>, therefore other metrics such as precision, recall, and most of all ranking score can be employed to effectively increase the quality of our recommendation system. The ranking score makes sure that top articles are more valued than lower articles</em></p>
+<p><strong>Is the size of test data sufficient?</strong></p>
+<p><em>In this case, the amount of test data is very small. Recall that there were only 20 elements in the test set that were found to be common. This data is insufficient to provide conclusive results about model and therefore more data should be employed to increase the efficacy of our model, and therefore achieve better predictions.</em></p>
+<p><strong>Other Testing Techniques</strong></p>
+<p>*We can employ A/B testing here. We can use top-rated algorithm to recommend articles to one group and to another group, using IP addresses, we track their location and recommend articles more closely associated with their demographics. Similar recommendation is used by Youtube for new users. We should be able to get a good amount of sample data if we ran our tests for 3 to 4 weeks**</p>
+<p><strong>Future Improvements</strong></p>
+<p><em>For future, a combination of different techniques like collaborative filtering, content based and SVD can be combined to cover all possible scenarios for a better recommendation system.</em></p>
 
 </div>
 </div>
